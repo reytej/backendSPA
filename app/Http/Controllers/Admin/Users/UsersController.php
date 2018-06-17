@@ -32,8 +32,11 @@ class UsersController extends MainController
        if(Auth::attempt(['email'=>$request->email,'password'=>$request->password])){
             $user = Auth::user();
             $success['user'] = $user;
+            $success['defaultUrl'] = '/';
+            if($user->role == 'ADMIN')
+                $success['defaultUrl'] = '/items';
             $success['token'] = $user->createToken('app')->accessToken;
-            return $this->sendResponse($success, 'User register successfully.');
+            return $this->sendResponse($success, 'User logged in successfully.');
        }
        else
             return $this->sendError('Wrong username or password.', $validator->errors());       
