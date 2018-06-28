@@ -27,13 +27,13 @@ class LinksModel extends Model
 					$subChildren = array();
 					foreach ($sub as $sb2) {
 						if($sb2->parent == $sb->code){
-							$subChildren[$sb2->code] = array('code' => $sb2->code, 'icon' => $sb2->icon, 'name' => $sb2->name, 'url' => $sb2->url);
+							$subChildren[$sb2->code] = array('code' => $sb2->code, 'icon' => $sb2->icon, 'name' => $sb2->name, 'url' => $sb2->url, 'path' => $sb2->path);
 						}
 					}
-					$children[$sb->code] = array('code' => $sb->code,'name' => $sb->name, 'icon' => $sb->icon, 'url' => $sb->url,'children' => $subChildren);
+					$children[$sb->code] = array('code' => $sb->code,'name' => $sb->name, 'icon' => $sb->icon, 'url' => $sb->url, 'path' => $sb->path, 'children' => $subChildren);
 				}
 			}
-			$links[$mn->code] = array('code' => $mn->code, 'name' => $mn->name, 'url' => $mn->url, 'children' => $children);
+			$links[$mn->code] = array('code' => $mn->code, 'name' => $mn->name, 'url' => $mn->url, 'path' => $mn->path, 'children' => $children);
     	}
     	return $links;
     }
