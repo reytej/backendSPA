@@ -18,6 +18,28 @@ class UsersController extends MainController
         return $this->sendResponse(User::with('role')->get(), 'success');
     }
     /**
+     * create a user
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create(Request $request){
+        $input = $request->all();
+        $input['password'] = bcrypt($input['password']);
+        $user = User::create($input);
+        $success['user'] = $user;
+        return $this->sendResponse($success, 'User create successfully.');
+    }
+    /**
+     * update a user
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request,$id){
+        $mdl = new User();
+        $success = $mdl->where('id',$id)->update($request->all());
+        return $this->sendResponse($success, 'User create successfully.');
+    }
+    /**
      * Login api
      *
      * @return \Illuminate\Http\Response
