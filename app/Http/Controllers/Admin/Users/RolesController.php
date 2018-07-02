@@ -15,7 +15,7 @@ class RolesController extends MainController
      * @return \Illuminate\Http\Response
      */
     public function index(){
-        return $this->sendResponse(RolesModel::all(), 'success');
+        return $this->sendResponse(RolesModel::withTrashed()->get(), 'success');
     }
     /**
      * create a role
@@ -27,13 +27,29 @@ class RolesController extends MainController
         return $this->sendResponse($created, 'success');
     }
     /**
-     * update a role
+     * update a user
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id){
-        $role = Article::findOrFail($id);
-        $role->update($request->all());
-        return $this->sendResponse($role, 'success');
+    public function update(Request $request,$id){
+        $mdl = new RolesModel();
+        $success = $mdl->where('id',$id)->update($request->all());
+        return $this->sendResponse($success, 'Role create successfully.');
+    }
+    /**
+     * delete a role
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id){
+        return $this->sendResponse(RolesModel::destroy($id), 'success');
+    }
+    /**
+     * restore a role
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function restore($id){
+        return $this->sendResponse(RolesModel::withTrashed()->where('id',$id)->restore(), 'success');
     }
 }

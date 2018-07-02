@@ -15,7 +15,7 @@ class UsersController extends MainController
      * @return \Illuminate\Http\Response
      */
     public function index(){
-        return $this->sendResponse(User::with('role')->get(), 'success');
+        return $this->sendResponse(User::withTrashed()->with('role')->get(), 'success');
     }
     /**
      * create a user
@@ -38,6 +38,22 @@ class UsersController extends MainController
         $mdl = new User();
         $success = $mdl->where('id',$id)->update($request->all());
         return $this->sendResponse($success, 'User create successfully.');
+    }
+    /**
+     * delete a user
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id){
+        return $this->sendResponse(User::destroy($id), 'success');
+    }
+    /**
+     * restore a user
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function restore($id){
+        return $this->sendResponse(User::withTrashed()->where('id',$id)->restore(), 'success');
     }
     /**
      * Login api

@@ -21,10 +21,14 @@ Route::middleware('auth:api')->namespace('Admin\Users')->group(function(){
 	Route::post('users','UsersController@index');
 	Route::post('users/create','UsersController@create');
 	Route::post('users/update/{id}','UsersController@update');
+	Route::post('users/destroy/{id}','UsersController@destroy');
+	Route::post('users/restore/{id}','UsersController@restore');
 
 	Route::post('roles','RolesController@index');
 	Route::post('roles/create','RolesController@create');
 	Route::post('roles/update/{id}','RolesController@update');
+	Route::post('roles/destroy/{id}','RolesController@destroy');
+	Route::post('roles/restore/{id}','RolesController@restore');
 });
 Route::middleware('auth:api')->namespace('UI')->group(function(){
 	Route::post('dropdowns/roles','DropdownsController@roles');
