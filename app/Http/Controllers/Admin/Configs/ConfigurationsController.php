@@ -2,7 +2,6 @@
 namespace App\Http\Controllers\Admin\Configs;
 use Illuminate\Http\Request;
 use App\Http\Controllers\MainController as MainController;
-use App\Model\Configs\LinksModel;
 
 use Validator;
 
@@ -16,8 +15,8 @@ class ConfigurationsController extends MainController
     public function getConfigurations(Request $request)
     {
         $configs = array();
-        $linksMDL = new LinksModel();
-        $configs['links'] = $linksMDL->getLinks();
+        // $linksMDL = new LinksModel();
+        // $configs['links'] = $linksMDL->getLinks();
         return $this->sendResponse($configs, 'Configs Loaded');
     }
 }
