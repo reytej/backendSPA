@@ -74,8 +74,6 @@ class UsersController extends MainController
             $user = Auth::user();
             $success['user'] = $user;
             $success['defaultUrl'] = '/';
-            if($user->role == 'ADMIN')
-                $success['defaultUrl'] = '/company';
             $success['token'] = $user->createToken('app')->accessToken;
             return $this->sendResponse($success, 'User logged in successfully.');
        }

@@ -29,6 +29,7 @@ Route::middleware('auth:api')->namespace('Admin\Users')->group(function(){
 	Route::post('roles/update/{id}','RolesController@update');
 	Route::post('roles/destroy/{id}','RolesController@destroy');
 	Route::post('roles/restore/{id}','RolesController@restore');
+	Route::post('roles/get/{id}','RolesController@getRole');
 });
 Route::middleware('auth:api')->namespace('UI')->group(function(){
 	Route::post('dropdowns/roles','DropdownsController@roles');

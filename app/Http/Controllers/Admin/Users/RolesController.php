@@ -18,6 +18,16 @@ class RolesController extends MainController
         return $this->sendResponse(RolesModel::withTrashed()->get(), 'success');
     }
     /**
+     * get specific role
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getRole($id){
+        $mdl = RolesModel::withTrashed()
+                         ->where('id',$id);
+        return $this->sendResponse($mdl->first(), 'success');
+    }
+    /**
      * create a role
      *
      * @return \Illuminate\Http\Response
@@ -34,7 +44,7 @@ class RolesController extends MainController
     public function update(Request $request,$id){
         $mdl = new RolesModel();
         $success = $mdl->where('id',$id)->update($request->all());
-        return $this->sendResponse($success, 'Role create successfully.');
+        return $this->sendResponse($success, 'Role update successfully.');
     }
     /**
      * delete a role
