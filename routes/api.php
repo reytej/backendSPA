@@ -16,6 +16,8 @@ Route::post('register', 'Admin\Users\UsersController@register');
 Route::post('login', 'Admin\Users\UsersController@login');
 Route::middleware('auth:api')->namespace('Admin\Configs')->group(function(){
 	Route::post('getConfigs','ConfigurationsController@getConfigurations');
+	Route::post('company','CompanyController@index');
+	Route::post('company/update','CompanyController@update');
 });
 Route::middleware('auth:api')->namespace('Admin\Users')->group(function(){
 	Route::post('users','UsersController@index');
@@ -33,4 +35,9 @@ Route::middleware('auth:api')->namespace('Admin\Users')->group(function(){
 });
 Route::middleware('auth:api')->namespace('UI')->group(function(){
 	Route::post('dropdowns/roles','DropdownsController@roles');
+});
+// Route::namespace('Inventory')->group(function(){
+Route::middleware('auth:api')->namespace('Inventory')->group(function(){
+	Route::post('items','ItemsController@index');
+	Route::post('items/{id}','ItemsController@index');
 });

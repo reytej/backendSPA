@@ -37,7 +37,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the author that wrote the book.
+     * Get the role details
      */
     public function role()
     {
