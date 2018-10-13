@@ -21,7 +21,6 @@ class CreateStockItems extends Migration
             $table->integer('origin_id');
             $table->integer('tax_type_id');
             $table->string('description')->unique();
-            $table->longText('long_description')->unique();
             $table->string('default_uom');
             $table->double('actual_cost');
             $table->double('last_cost');
