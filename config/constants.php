@@ -21,7 +21,6 @@ return [
         'po_delivery' => '25',
         'sales_order' => '30',
         'sales_quote' => '32',
-        'sales_quote' => '32',
         'customer_refund' => '101'
     ]
 ];
