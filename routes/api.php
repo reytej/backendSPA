@@ -41,8 +41,10 @@ Route::middleware('auth:api')->namespace('Inventory')->group(function(){
     Route::post('items','ItemsController@index');
     Route::post('items/{id}','ItemsController@index');
 
+    Route::post('stock_categories','StockCategoriesController@index');
     Route::post('stock_categories/store','StockCategoriesController@store');
-    Route::post('stock_categories/update/{id}','StockCategoriesController@update');
+    Route::post('stock_categories/update','StockCategoriesController@update');
+    Route::post('stock_categories/delete', 'StockCategoriesController@delete');
 
 //    Route::resource('/stock_categories', 'StockCategoriesController', [
 //        'only' => ['index', 'create', 'store', 'edit', 'update', 'destroy']

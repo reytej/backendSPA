@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Inventory;
 
 use App\Model\Inventory\StockCategoriesModel;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\MainController as MainController;
+//use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 //use Illuminate\Validation\Validator;
 use Illuminate\Support\Facades\Validator;
 
-class StockCategoriesController extends Controller
+//class StockCategoriesController extends Controller
+class StockCategoriesController extends MainController
 {
     /**
      * Display a listing of the resource.
@@ -18,7 +20,7 @@ class StockCategoriesController extends Controller
      */
     public function index()
     {
-        //
+        return $this->sendResponse(StockCategoriesModel::withTrashed()->get(), 'success');
     }
 
     /**
@@ -127,8 +129,15 @@ class StockCategoriesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function delete(Request $request)
     {
-        //
+        //echo 'ID:'.$request->id; die;
+
+        $deleteItem = StockCategoriesModel::find($request->id);
+        $deleteItem->delete();
+
+        if ($deleteItem->trashed()) {
+            return response()->json(['status'=>'success', 'message'=>'Stock category was successfully soft-deleted']);
+        }
     }
 }
