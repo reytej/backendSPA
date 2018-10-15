@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers\Inventory;
 
+use App\Model\Inventory\StockCategoriesModel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
+//use Illuminate\Validation\Validator;
+use Illuminate\Support\Facades\Validator;
 
 class StockCategoriesController extends Controller
 {
@@ -35,7 +39,32 @@ class StockCategoriesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $rules = [
+            'category' => 'required|unique:stock_categories,category,'
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+        $category = new StockCategoriesModel($request->except('_token'));
+        $category->category = $request->category;
+
+        if (!($validator->fails()) && $category->save()) {
+            $category_id = $category->id;
+
+            $data = array(
+                'status'=>'success',
+                'category_id' => $category_id
+            );
+
+            return response()->json(['status'=>'success', 'response'=>$data]);
+
+            //\Session::flash('flash_message', 'Offer was successfully added to the product!');
+            //\Session::flash('alert-class', 'alert-success');
+            //return redirect($success_redirect);
+        } else {
+            //return redirect()->back()->withErrors($validator)->with('error', 'Error')->withInput();
+            return response()->json(['errors'=>$validator->errors()]);
+        }
     }
 
     /**
@@ -67,9 +96,29 @@ class StockCategoriesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        //echo 'Request ID: '.$request->id;
+        //echo '===Category: '.$request->category;
+        //die;
+
+        $id = $request->id;
+
+        $rules = [
+            'category' => 'required|unique:stock_categories,category,$id'
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+        $stock_category_model = StockCategoriesModel::find($request->id);
+        $stock_category_model->category = $request->get('category');
+
+        if (!($validator->fails()) && $stock_category_model->save()) {
+            return response()->json(['status'=>'success', 'response'=>$stock_category_model]);
+        }else{
+            return response()->json(['errors'=>$validator->errors()]);
+        }
+
     }
 
     /**
