@@ -137,7 +137,7 @@ class StockCategoriesController extends MainController
         $deleteItem->delete();
 
         if ($deleteItem->trashed()) {
-            return response()->json(['status'=>'success', 'message'=>'Stock category was successfully soft-deleted']);
+            return response()->json(['status'=>'success', 'message'=>'Stock category was successfully deleted']);
         }
     }
 }
