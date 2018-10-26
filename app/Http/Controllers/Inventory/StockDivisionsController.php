@@ -91,9 +91,10 @@ class StockDivisionsController extends MainController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    //public function update(Request $request)
+    public function update(Request $request, $id)
     {
-        $id = $request->id;
+        //$id = $request->id;
 
         $rules = [
             'division' => 'required|unique:stock_divisions,division,$id'
@@ -101,7 +102,8 @@ class StockDivisionsController extends MainController
 
         $validator = Validator::make($request->all(), $rules);
 
-        $stock_division_model = StockDivisionsModel::find($request->id);
+        //$stock_division_model = StockDivisionsModel::find($request->id);
+        $stock_division_model = StockDivisionsModel::find($id);
         $stock_division_model->division = $request->get('division');
 
         if (!($validator->fails()) && $stock_division_model->save()) {
@@ -118,9 +120,11 @@ class StockDivisionsController extends MainController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    //public function delete(Request $request)
+    public function delete($id)
     {
-        $deleteItem = StockDjvisionsModel::find($request->id);
+        //$deleteItem = StockDjvisionsModel::find($request->id);
+        $deleteItem = StockDjvisionsModel::find($id);
         $deleteItem->delete();
 
         if ($deleteItem->trashed()) {

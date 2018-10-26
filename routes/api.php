@@ -43,17 +43,22 @@ Route::middleware('auth:api')->namespace('Inventory')->group(function(){
 
     Route::post('stock_categories','StockCategoriesController@index');
     Route::post('stock_categories/store','StockCategoriesController@store');
-    Route::post('stock_categories/update','StockCategoriesController@update');
-    Route::post('stock_categories/delete', 'StockCategoriesController@delete');
+    Route::post('stock_categories/update/{id}','StockCategoriesController@update');
+    Route::post('stock_categories/delete/{id}', 'StockCategoriesController@delete');
 
     Route::post('stock_divisions','StockDivisionsController@index');
     Route::post('stock_divisions/store','StockDivisionsController@store');
-    Route::post('stock_divisions/update','StockDivisionsController@update');
-    Route::post('stock_divisions/delete', 'StockDivisionsController@delete');
+    Route::post('stock_divisions/update/{id}','StockDivisionsController@update');
+    Route::post('stock_divisions/delete/{id}', 'StockDivisionsController@delete');
 
     Route::post('stock_locations','StockLocationsController@index');
     Route::post('stock_locations/store','StockLocationsController@store');
     Route::post('stock_locations/update/{id}','StockLocationsController@update');
-    Route::post('stock_locations/delete', 'StockLocationsController@delete');
+    Route::post('stock_locations/delete/{id}', 'StockLocationsController@delete');
+
+    Route::post('stock_origins','StockOriginsController@index');
+    Route::post('stock_origins/store','StockOriginsController@store');
+    Route::post('stock_origins/update/{id}','StockOriginsController@update');
+    Route::post('stock_origins/delete/{id}', 'StockOriginsController@delete');
 
 });

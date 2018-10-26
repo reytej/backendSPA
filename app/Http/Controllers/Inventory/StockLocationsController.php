@@ -134,15 +134,18 @@ class StockLocationsController extends MainController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function delete(Request $request)
+    //public function delete(Request $request)
+    public function delete($id)
     {
         //echo 'ID:'.$request->id; die;
 
-        $deleteItem = StockLocationsModel::find($request->id);
+        //$deleteItem = StockLocationsModel::find($request->id);
+        $deleteItem = StockLocationsModel::find($id);
         $deleteItem->delete();
 
         if ($deleteItem->trashed()) {
-            return response()->json(['status'=>'success', 'message'=>'Stock location was successfully deleted']);
+            //return response()->json(['status'=>'success', 'message'=>'Stock location was successfully deleted']);
+            return $this->sendResponse($deleteItem->trashed(), 'Stock location was successfully deleted.');
         }
     }
     /**

@@ -98,13 +98,10 @@ class StockCategoriesController extends MainController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    //public function update(Request $request)
+    public function update(Request $request, $id)
     {
-        //echo 'Request ID: '.$request->id;
-        //echo '===Category: '.$request->category;
-        //die;
-
-        $id = $request->id;
+        //$id = $request->id;
 
         $rules = [
             'category' => 'required|unique:stock_categories,category,$id'
@@ -112,7 +109,8 @@ class StockCategoriesController extends MainController
 
         $validator = Validator::make($request->all(), $rules);
 
-        $stock_category_model = StockCategoriesModel::find($request->id);
+        //$stock_category_model = StockCategoriesModel::find($request->id);
+        $stock_category_model = StockCategoriesModel::find($id);
         $stock_category_model->category = $request->get('category');
 
         if (!($validator->fails()) && $stock_category_model->save()) {
@@ -129,11 +127,11 @@ class StockCategoriesController extends MainController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function delete(Request $request)
+    //public function delete(Request $request)
+    public function delete($id)
     {
-        //echo 'ID:'.$request->id; die;
-
-        $deleteItem = StockCategoriesModel::find($request->id);
+        //$deleteItem = StockCategoriesModel::find($request->id);
+        $deleteItem = StockCategoriesModel::find($id);
         $deleteItem->delete();
 
         if ($deleteItem->trashed()) {
