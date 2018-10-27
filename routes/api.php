@@ -61,4 +61,9 @@ Route::middleware('auth:api')->namespace('Inventory')->group(function(){
     Route::post('stock_origins/update/{id}','StockOriginsController@update');
     Route::post('stock_origins/delete/{id}', 'StockOriginsController@delete');
 
+    Route::post('stock_items','StockItemsController@index');
+    Route::post('stock_items/store','StockItemsController@store');
+    Route::post('stock_items/update/{id}','StockItemsController@update');
+    Route::post('stock_items/delete/{id}', 'StockItemsController@delete');
+
 });

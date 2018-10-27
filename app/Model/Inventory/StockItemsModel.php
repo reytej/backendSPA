@@ -19,4 +19,20 @@ class StockItemsModel extends Model
 
     protected $guarded = ['id'];
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
+
+    /**
+     * Get user roles pages
+     *
+     * @var array
+     */
+    public function getPages($code=null){
+        $pages = $this->select('pages');
+        if($code){
+            $pages->where('code',$code);
+            return $pages->first();
+        }
+        else
+            return $pages->get();
+    }
+
 }
