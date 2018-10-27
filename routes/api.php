@@ -35,6 +35,9 @@ Route::middleware('auth:api')->namespace('Admin\Users')->group(function(){
 });
 Route::middleware('auth:api')->namespace('UI')->group(function(){
     Route::post('dropdowns/roles','DropdownsController@roles');
+    Route::post('dropdowns/stock_categories','DropdownsController@stock_categories');
+    Route::post('dropdowns/stock_divisions','DropdownsController@stock_divisions');
+    Route::post('dropdowns/stock_origins','DropdownsController@stock_origins');
 });
 // Route::namespace('Inventory')->group(function(){
 Route::middleware('auth:api')->namespace('Inventory')->group(function(){

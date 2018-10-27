@@ -18,7 +18,7 @@ class StockItemsController extends MainController
      */
     public function index()
     {
-        return $this->sendResponse(StockItemsModel::withTrashed()->get(), 'success');
+        return $this->sendResponse(StockItemsModel::withTrashed()->with('category')->with('division')->with('origin')->get(), 'success');
     }
 
     /**

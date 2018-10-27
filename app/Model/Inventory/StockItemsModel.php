@@ -21,18 +21,27 @@ class StockItemsModel extends Model
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
 
     /**
-     * Get user roles pages
-     *
-     * @var array
+     * Get the category details
      */
-    public function getPages($code=null){
-        $pages = $this->select('pages');
-        if($code){
-            $pages->where('code',$code);
-            return $pages->first();
-        }
-        else
-            return $pages->get();
+    public function category()
+    {
+        return $this->belongsTo('App\Model\Inventory\StockCategoriesModel','category_id','id');
+    }
+
+    /**
+     * Get the division details
+     */
+    public function division()
+    {
+        return $this->belongsTo('App\Model\Inventory\StockDivisionsModel','division_id','id');
+    }
+
+    /**
+     * Get the origin details
+     */
+    public function origin()
+    {
+        return $this->belongsTo('App\Model\Inventory\StockOriginsModel','origin_id','id');
     }
 
 }
