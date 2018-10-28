@@ -6,7 +6,10 @@ use App\Model\Inventory\StockCategoriesModel;
 use App\Model\Inventory\StockDivisionsModel;
 use App\Model\Inventory\StockItemsModel;
 use App\Model\Inventory\StockOriginsModel;
+use App\Model\Inventory\StockUomsModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\User;
 //use App\Http\Controllers\Controller;
 use App\Http\Controllers\MainController as MainController;
 use Carbon\Carbon;
@@ -41,22 +44,40 @@ class StockItemsController extends MainController
         }
         ### stock div - end
 
-        ### stock div - start
+        ### stock origin - start
         $options_origin = array();
         $results = StockOriginsModel::all();
         foreach ($results as $res) {
             $options_origin[] = array('label' => $res->origin, 'value'=> $res->id);
             //$options_origin[] = array('label' => "[".$res->id."] ".$res->category, 'value'=> $res->id);
         }
-        ### stock div - end
+        ### stock origin - end
+
+        ### stock uom - start
+        $options_uom = array();
+        $results = StockUomsModel::all();
+        foreach ($results as $res) {
+            //$options_uom[] = array('label' => $res->origin, 'value'=> $res->id);
+            $options_uom[] = array('label' => "[".$res->code."] ".$res->description, 'value'=> $res->code);
+        }
+        ### stock uom - end
 
         $stock_items = StockItemsModel::withTrashed()->with('category')->with('division')->with('origin')->get();
+
+        foreach($stock_items as $key => $value){
+            if($value->deleted_at == ''){
+                $stock_items[$key]->deleted = 0;
+            }else{
+                $stock_items[$key]->deleted = 1;
+            }
+        }
 
         $data = array(
             'stock_items' => $stock_items,
             'stock_categories' => $options,
             'stock_divisions' => $options_div,
             'stock_origins' => $options_origin,
+            'stock_uoms' => $options_uom
         );
 
         //return $this->sendResponse(StockItemsModel::withTrashed()->with('category')->with('division')->with('origin')->get(), 'success');
@@ -86,15 +107,17 @@ class StockItemsController extends MainController
             'category_id' => 'required',
             'division_id' => 'required',
             'origin_id' => 'required',
-            'tax_type_id' => 'required',
+            //'tax_type_id' => 'required',
             'description' => 'required',
             'default_uom' => 'required',
-            'actual_cost' => 'required',
-            'last_cost' => 'required',
-            'qty_per_box' => 'required',
+            //'actual_cost' => 'required',
+            //'last_cost' => 'required',
+            //'qty_per_box' => 'required',
             'remarks' => 'required',
-            'created_by' => 'required'
+            //'created_by' => 'required'
         ];
+
+        $user = Auth::user();
 
         $validator = Validator::make($request->all(), $rules);
 
@@ -103,14 +126,15 @@ class StockItemsController extends MainController
         $item->category_id = $request->category_id;
         $item->division_id = $request->division_id;
         $item->origin_id = $request->origin_id;
-        $item->tax_type_id = $request->tax_type_id;
+        //$item->tax_type_id = $request->tax_type_id;
+        $item->tax_type_id = 1; //SET AS 1 for the meantime
         $item->description = $request->description;
         $item->default_uom = $request->default_uom;
         $item->actual_cost = ($request->actual_cost)+0;
         $item->last_cost = ($request->last_cost)+0;
         $item->qty_per_box = ($request->qty_per_box)+0;
         $item->remarks = $request->remarks;
-        $item->created_by = $request->created_by;
+        $item->created_by = $user->id;
 
         if (!($validator->fails()) && $item->save()) {
             $item_id = $item->id;
@@ -122,9 +146,15 @@ class StockItemsController extends MainController
             );
 
             //return response()->json(['status'=>'success', 'response'=>$data]);
-            return $this->sendResponse($item, 'Stock item ['.$request->code.'] '.$request->description.' was added successfully.');
+            //return $this->sendResponse($item, 'Stock item ['.$request->code.'] '.$request->description.' was added successfully.');
+            return $this->sendResponse($data, 'Stock item ['.$request->code.'] '.$request->description.' was added successfully.');
         } else {
-            return response()->json(['errors'=>$validator->errors()]);
+            $data = array(
+                'status'=>'error',
+                'errors' => $validator->errors(),
+            );
+//            return response()->json(['errors'=>$validator->errors()]);
+            return $this->sendResponse($data,'');
         }
 
     }
@@ -161,6 +191,7 @@ class StockItemsController extends MainController
     public function update(Request $request, $id)
     {
         $sim = new StockItemsModel();
+        //pwede dito ka lagay validation
         $success = $sim->where('id',$id)->update($request->all());
         return $this->sendResponse($success, 'Stock item was updated successfully.');
     }
