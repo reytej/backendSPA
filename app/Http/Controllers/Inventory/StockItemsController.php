@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers\Inventory;
 
+use App\Model\Inventory\StockCategoriesModel;
+use App\Model\Inventory\StockDivisionsModel;
 use App\Model\Inventory\StockItemsModel;
+use App\Model\Inventory\StockOriginsModel;
 use Illuminate\Http\Request;
 //use App\Http\Controllers\Controller;
 use App\Http\Controllers\MainController as MainController;
@@ -18,7 +21,46 @@ class StockItemsController extends MainController
      */
     public function index()
     {
-        return $this->sendResponse(StockItemsModel::withTrashed()->with('category')->with('division')->with('origin')->get(), 'success');
+        $data = array();
+
+        ### stock categories - start
+        $options = array();
+        $results = StockCategoriesModel::all();
+        foreach ($results as $res) {
+            $options[] = array('label' => $res->category, 'value'=> $res->id);
+            //$options[] = array('label' => "[".$res->id."] ".$res->category, 'value'=> $res->id);
+        }
+        ### stock categories - end
+
+        ### stock div - start
+        $options_div = array();
+        $results = StockDivisionsModel::all();
+        foreach ($results as $res) {
+            $options_div[] = array('label' => $res->division, 'value'=> $res->id);
+            //$options_div[] = array('label' => "[".$res->id."] ".$res->category, 'value'=> $res->id);
+        }
+        ### stock div - end
+
+        ### stock div - start
+        $options_origin = array();
+        $results = StockOriginsModel::all();
+        foreach ($results as $res) {
+            $options_origin[] = array('label' => $res->origin, 'value'=> $res->id);
+            //$options_origin[] = array('label' => "[".$res->id."] ".$res->category, 'value'=> $res->id);
+        }
+        ### stock div - end
+
+        $stock_items = StockItemsModel::withTrashed()->with('category')->with('division')->with('origin')->get();
+
+        $data = array(
+            'stock_items' => $stock_items,
+            'stock_categories' => $options,
+            'stock_divisions' => $options_div,
+            'stock_origins' => $options_origin,
+        );
+
+        //return $this->sendResponse(StockItemsModel::withTrashed()->with('category')->with('division')->with('origin')->get(), 'success');
+        return $this->sendResponse($data, 'success');
     }
 
     /**
