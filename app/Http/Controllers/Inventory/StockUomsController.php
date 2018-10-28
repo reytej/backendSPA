@@ -18,7 +18,7 @@ class StockUomsController extends MainController
      */
     public function index()
     {
-        return $this->sendResponse(StockUomsModel::withTrashed()->get(), 'success');
+        return $this->sendResponse(StockUomsModel::withoutTrashed()->get(), 'success');
     }
 
     /**
@@ -61,9 +61,16 @@ class StockUomsController extends MainController
                 'stock_uom' => $uom
             );
 
-            return response()->json(['status'=>'success', 'response'=>$data]);
+            //return response()->json(['status'=>'success', 'response'=>$data]);
+            return $this->sendResponse($data, 'Stock UOM was added successfully.');
         } else {
-            return response()->json(['errors'=>$validator->errors()]);
+            //return response()->json(['errors'=>$validator->errors()]);
+            $data = array(
+                'status'=>'error',
+                'errors' => $validator->errors(),
+            );
+            return $this->sendResponse($data,'');
+
         }
     }
 
@@ -98,8 +105,11 @@ class StockUomsController extends MainController
      */
     public function update(Request $request, $id)
     {
+        //echo 'update: '.$id;
+
         $rules = [
-            'code' => 'required|unique:stock_uoms,code,$id',
+            //'code' => 'required|unique:stock_uoms,code,$id',
+            'code' => 'required|unique:stock_uoms,code,'.$id,
             'description' => 'required',
             'qty' => 'required'
         ];
@@ -114,9 +124,21 @@ class StockUomsController extends MainController
         $stock_unit_model->qty = ($request->get('qty'))+0;
 
         if (!($validator->fails()) && $stock_unit_model->save()) {
-            return response()->json(['status'=>'success', 'response'=>$stock_unit_model]);
+            //return response()->json(['status'=>'success', 'response'=>$stock_unit_model]);
+            $data = array(
+                'status'=>'success',
+                'details' => $stock_unit_model
+            );
+
+            return $this->sendResponse($data, 'Stock category was updated successfully.');
         }else{
-            return response()->json(['errors'=>$validator->errors()]);
+            //return response()->json(['errors'=>$validator->errors()]);
+            $data = array(
+                'status'=>'error',
+                'errors' => $validator->errors(),
+            );
+            return $this->sendResponse($data,'');
+
         }
     }
 
@@ -134,7 +156,8 @@ class StockUomsController extends MainController
         $deleteItem->delete();
 
         if ($deleteItem->trashed()) {
-            return response()->json(['status'=>'success', 'message'=>'Stock unit was successfully deleted']);
+            //return response()->json(['status'=>'success', 'message'=>'Stock unit was successfully deleted']);
+            return $this->sendResponse($deleteItem->trashed(), 'Stock UOM was successfully deleted.');
         }
     }
 

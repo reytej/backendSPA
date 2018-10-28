@@ -18,7 +18,7 @@ class StockDivisionsController extends MainController
      */
     public function index()
     {
-        return $this->sendResponse(StockDivisionsModel::withTrashed()->get(), 'success');
+        return $this->sendResponse(StockDivisionsModel::withoutTrashed()->get(), 'success');
     }
 
     /**
@@ -56,9 +56,16 @@ class StockDivisionsController extends MainController
                 'division_id' => $division_id
             );
 
-            return response()->json(['status'=>'success', 'response'=>$data]);
+            //return response()->json(['status'=>'success', 'response'=>$data]);
+            return $this->sendResponse($data, 'Stock division was added successfully.');
         } else {
-            return response()->json(['errors'=>$validator->errors()]);
+            $data = array(
+                'status'=>'error',
+                'errors' => $validator->errors(),
+            );
+
+            //return response()->json(['errors'=>$validator->errors()]);
+            return $this->sendResponse($data,'');
         }
     }
 
@@ -97,7 +104,8 @@ class StockDivisionsController extends MainController
         //$id = $request->id;
 
         $rules = [
-            'division' => 'required|unique:stock_divisions,division,$id'
+            //'division' => 'required|unique:stock_divisions,division,$id'
+            'division' => 'required'
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -107,9 +115,23 @@ class StockDivisionsController extends MainController
         $stock_division_model->division = $request->get('division');
 
         if (!($validator->fails()) && $stock_division_model->save()) {
-            return response()->json(['status'=>'success', 'response'=>$stock_division_model]);
+            //return response()->json(['status'=>'success', 'response'=>$stock_division_model]);
+
+            $data = array(
+                'status'=>'success',
+                'details' => $stock_division_model
+            );
+
+            return $this->sendResponse($data, 'Stock division was updated successfully.');
         }else{
-            return response()->json(['errors'=>$validator->errors()]);
+            //return response()->json(['errors'=>$validator->errors()]);
+            $data = array(
+                'status'=>'error',
+                'errors' => $validator->errors(),
+            );
+
+            return $this->sendResponse($data,'');
+
         }
 
     }
@@ -124,11 +146,12 @@ class StockDivisionsController extends MainController
     public function delete($id)
     {
         //$deleteItem = StockDjvisionsModel::find($request->id);
-        $deleteItem = StockDjvisionsModel::find($id);
+        $deleteItem = StockDivisionsModel::find($id);
         $deleteItem->delete();
 
         if ($deleteItem->trashed()) {
-            return response()->json(['status'=>'success', 'message'=>'Stock division was successfully deleted']);
+            //return response()->json(['status'=>'success', 'message'=>'Stock division was successfully deleted']);
+            return $this->sendResponse($deleteItem->trashed(), 'Stock division was successfully deleted.');
         }
     }
 }

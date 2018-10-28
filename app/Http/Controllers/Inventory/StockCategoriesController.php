@@ -20,7 +20,8 @@ class StockCategoriesController extends MainController
      */
     public function index()
     {
-        return $this->sendResponse(StockCategoriesModel::withTrashed()->get(), 'success');
+        return $this->sendResponse(StockCategoriesModel::withoutTrashed()->get(), 'success');
+        //return $this->sendResponse(StockCategoriesModel::all()->get(), 'success');
     }
 
     /**
@@ -58,14 +59,22 @@ class StockCategoriesController extends MainController
                 'category_id' => $category_id
             );
 
-            return response()->json(['status'=>'success', 'response'=>$data]);
+            //return response()->json(['status'=>'success', 'response'=>$data]);
+            return $this->sendResponse($data, 'Stock category was added successfully.');
 
             //\Session::flash('flash_message', 'Offer was successfully added to the product!');
             //\Session::flash('alert-class', 'alert-success');
             //return redirect($success_redirect);
         } else {
             //return redirect()->back()->withErrors($validator)->with('error', 'Error')->withInput();
-            return response()->json(['errors'=>$validator->errors()]);
+            //return response()->json(['errors'=>$validator->errors()]);
+
+            $data = array(
+                'status'=>'error',
+                'errors' => $validator->errors(),
+            );
+//            return response()->json(['errors'=>$validator->errors()]);
+            return $this->sendResponse($data,'');
         }
     }
 
@@ -104,7 +113,8 @@ class StockCategoriesController extends MainController
         //$id = $request->id;
 
         $rules = [
-            'category' => 'required|unique:stock_categories,category,$id'
+            'category' => 'required|unique:stock_categories,category,'.$id
+            //'category' => 'required'
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -114,9 +124,22 @@ class StockCategoriesController extends MainController
         $stock_category_model->category = $request->get('category');
 
         if (!($validator->fails()) && $stock_category_model->save()) {
-            return response()->json(['status'=>'success', 'response'=>$stock_category_model]);
+            //return response()->json(['status'=>'success', 'response'=>$stock_category_model]);
+
+            $data = array(
+                'status'=>'success',
+                'details' => $stock_category_model
+            );
+
+            return $this->sendResponse($data, 'Stock category was updated successfully.');
         }else{
-            return response()->json(['errors'=>$validator->errors()]);
+            //return response()->json(['errors'=>$validator->errors()]);
+            $data = array(
+                'status'=>'error',
+                'errors' => $validator->errors(),
+            );
+//            return response()->json(['errors'=>$validator->errors()]);
+            return $this->sendResponse($data,'');
         }
 
     }
@@ -135,7 +158,8 @@ class StockCategoriesController extends MainController
         $deleteItem->delete();
 
         if ($deleteItem->trashed()) {
-            return response()->json(['status'=>'success', 'message'=>'Stock category was successfully deleted']);
+            //return response()->json(['status'=>'success', 'message'=>'Stock category was successfully deleted']);
+            return $this->sendResponse($deleteItem->trashed(), 'Stock category was successfully deleted.');
         }
     }
 }

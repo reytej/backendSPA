@@ -62,7 +62,7 @@ class StockItemsController extends MainController
         }
         ### stock uom - end
 
-        $stock_items = StockItemsModel::withTrashed()->with('category')->with('division')->with('origin')->get();
+        $stock_items = StockItemsModel::withoutTrashed()->with('category')->with('division')->with('origin')->get();
 
         foreach($stock_items as $key => $value){
             if($value->deleted_at == ''){
@@ -190,11 +190,91 @@ class StockItemsController extends MainController
      */
     public function update(Request $request, $id)
     {
+        $rules = [
+            'code' => 'required|unique:stock_items,code,'.$id,
+            //'code' => 'required',
+            'category_id' => 'required',
+            'division_id' => 'required',
+            'origin_id' => 'required',
+            //'tax_type_id' => 'required',
+            'description' => 'required',
+            'default_uom' => 'required',
+            //'actual_cost' => 'required',
+            //'last_cost' => 'required',
+            //'qty_per_box' => 'required',
+            'remarks' => 'required',
+            //'created_by' => 'required'
+        ];
+
+        $user = Auth::user();
+
+        $validator = Validator::make($request->all(), $rules);
+
+        //$stock_category_model = StockCategoriesModel::find($request->id);
+        $sim = StockItemsModel::find($id);
+        //$sim->code = $request->get('code');
+        //$sim->code = $request->get('code');
+
+        $sim->code = $request->code;
+        $sim->category_id = $request->category_id;
+        $sim->division_id = $request->division_id;
+        $sim->origin_id = $request->origin_id;
+        ////$item->tax_type_id = $request->tax_type_id;
+        //$sim->tax_type_id = 1; //SET AS 1 for the meantime
+        $sim->description = $request->description;
+        $sim->default_uom = $request->default_uom;
+        //$sim->actual_cost = ($request->actual_cost)+0;
+        //$sim->last_cost = ($request->last_cost)+0;
+        //$sim->qty_per_box = ($request->qty_per_box)+0;
+        $sim->remarks = $request->remarks;
+        $sim->created_by = $user->id;
+
+        if (!($validator->fails()) && $sim->save()) {
+            //return response()->json(['status'=>'success', 'response'=>$stock_category_model]);
+
+            $data = array(
+                'status'=>'success',
+                'details' => $sim
+            );
+
+            return $this->sendResponse($data, 'Stock item was updated successfully.');
+        }else{
+            //return response()->json(['errors'=>$validator->errors()]);
+            $data = array(
+                'status'=>'error',
+                'errors' => $validator->errors(),
+            );
+//            return response()->json(['errors'=>$validator->errors()]);
+            return $this->sendResponse($data,'');
+        }
+    }
+
+    /*
+    public function update(Request $request, $id)
+    {
         $sim = new StockItemsModel();
         //pwede dito ka lagay validation
         $success = $sim->where('id',$id)->update($request->all());
-        return $this->sendResponse($success, 'Stock item was updated successfully.');
+
+        if($success){
+            $data = array(
+                'status'=>'success',
+                //'details' => $stock_category_model
+            );
+
+            return $this->sendResponse($data, 'Stock item was updated successfully.');
+        }else{
+            $data = array(
+                'status'=>'success',
+                //'details' => $stock_category_model
+            );
+
+            return $this->sendResponse($data, 'Error encountered');
+        }
+
+
     }
+    */
 
     /**
      * Soft-delete the specified resource from storage.
